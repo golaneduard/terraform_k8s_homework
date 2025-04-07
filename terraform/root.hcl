@@ -9,7 +9,7 @@ remote_state {
     bucket = "${split("/", path_relative_to_include())[0]}-tfstate"
 
     key            = "${path_relative_to_include()}/tfstate"
-    region         = "eu-north-1"
+    region         = "eu-central-1"
     encrypt        = true
     # dynamodb_table = "my-lock-table"
   }
@@ -17,11 +17,6 @@ remote_state {
 
 locals {
   aws_provider_version        = "5.84"
-  helm_provider_version       = "2.17"
-  kubernetes_provider_version = "2.35.1"
-  kubectl_provider_version    = "1.19"
-  sops_provider_version       = "1.1.1"
-  datadog_provider_version    = "3.49.0"
 }
 
 inputs = {

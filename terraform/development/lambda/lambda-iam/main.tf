@@ -11,22 +11,7 @@ data "aws_iam_policy_document" "assume_role" {
   }
 }
 
-resource "aws_iam_role" "iam_for_lambda" {
-  name               = "iam_for_lambda"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
-}
-
-data "archive_file" "lambda" {
-  type        = "zip"
-  source_file = "lambda.js"
-  output_path = "lambda_function_payload.zip"
-}
-
-###################
-#### CLOUDWATCH ###
-###################
-# See also the following AWS managed policy: AWSLambdaBasicExecutionRole
-data "aws_iam_policy_document" "lambda_logging" {
+data "aws_iam_policy_document" "lambda_logging_tracing" {
   statement {
     effect = "Allow"
 
@@ -34,20 +19,36 @@ data "aws_iam_policy_document" "lambda_logging" {
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
+      "xray:PutTraceSegments",
+      "xray:PutTelemetryRecords",
+      "xray:GetSamplingRules",
+      "xray:GetSamplingTargets",
+      "xray:GetSamplingStatisticSummaries"
     ]
 
-    resources = ["arn:aws:logs:*:*:*"]
+    resources = ["*"]
   }
 }
 
+
 resource "aws_iam_policy" "lambda_logging" {
-  name        = "lambda_logging"
+  name        = "${var.env}-lambda-logging"
   path        = "/"
   description = "IAM policy for logging from a lambda"
-  policy      = data.aws_iam_policy_document.lambda_logging.json
+  policy      = data.aws_iam_policy_document.lambda_logging_tracing.json
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.iam_for_lambda.name
   policy_arn = aws_iam_policy.lambda_logging.arn
+}
+
+resource "aws_iam_role_policy_attachment" "insights_policy" {
+  role       = aws_iam_role.iam_for_lambda.id
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
+}
+
+resource "aws_iam_role" "iam_for_lambda" {
+  name               = "${var.env}-iam-for-lambda"
+  assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
