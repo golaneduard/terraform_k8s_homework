@@ -1,16 +1,12 @@
 locals {
-  region_main    = "eu-north"
-  region         = "${local.region_main}-1"
-  env            = "stg-perf"
-  datadog_region = "ap1"
+  env = "production"
 }
 
 inputs = {
-  account_id     = "254864430905"
+  lambda_function_name = "${local.env}-lambda-function-name"
+  account_id     = "699347609631"
   env            = "${local.env}"
-  region         = "${local.region}"
-  desired_zones  = ["${local.region_main}-1b","${local.region_main}-1c"]
-  datadog_region = "${local.datadog_region}"
+  region         = "eu-north-1"
   env_tags       = {
     Env = "${local.env}"
   }
