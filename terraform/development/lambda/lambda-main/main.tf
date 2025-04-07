@@ -15,12 +15,7 @@ resource "aws_lambda_function" "test_lambda" {
     "arn:aws:lambda:${var.region}:${var.account_id}:layer:LambdaInsightsExtension:14"
   ]
 
-  environment {
-    variables = {
-      foo = "bar"
-    }
-  }
-
+  tags = merge(var.root_tags, var.env_tags)
 }
 
 resource "aws_lambda_event_source_mapping" "event_source_mapping" {
@@ -28,4 +23,6 @@ resource "aws_lambda_event_source_mapping" "event_source_mapping" {
   enabled          = true
   function_name    = "${aws_lambda_function.test_lambda.arn}"
   batch_size       = 1
+
+  tags = merge({ Name = "sqs" }, var.root_tags, var.env_tags)
 }

@@ -1,5 +1,7 @@
 resource "aws_sqs_queue" "queue_deadletter" {
   name = "${var.env}-terraform-example-deadletter-queue"
+
+  tags = merge(var.root_tags, var.env_tags)
 }
 
 resource "aws_sqs_queue" "queue" {
@@ -11,4 +13,6 @@ resource "aws_sqs_queue" "queue" {
     deadLetterTargetArn = aws_sqs_queue.queue_deadletter.arn
     maxReceiveCount     = 4
   })
+
+  tags = merge(var.root_tags, var.env_tags)
 }
