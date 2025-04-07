@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "test_lambda" {
-  filename      = "lambda_function_payload.zip"
+  filename       = "lambda_function_payload.zip"
   function_name = "${var.lambda_function_name}"
   role          = var.aws_iam_role_lambda_arn
   handler       = "lambda_function.lambda_handler"

@@ -1,6 +1,6 @@
 exclude {
-  if = false                       # Explicitly exclude.
-  actions = ["all_except_output"] # Allow `output.tf` actions nonetheless.
+  if                   = false                       # Explicitly exclude.
+  actions              = ["all_except_output"] # Allow `output.tf` actions nonetheless.
   exclude_dependencies = false    # Dependencies remain active.
 }
 

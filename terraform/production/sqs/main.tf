@@ -5,7 +5,7 @@ resource "aws_sqs_queue" "queue_deadletter" {
 }
 
 resource "aws_sqs_queue" "queue" {
-  name = "${var.env}-terraform-example-queue"
+  name                      = "${var.env}-terraform-example-queue"
   max_message_size          = 2048
   message_retention_seconds = 262144
 
