@@ -29,9 +29,7 @@ spec:
               topologyKey: kubernetes.io/hostname
             weight: 100
       containers:
-      - env:
-        - name: KUBERNETES_CLUSTER_DOMAIN
-          value: {{ quote .Values.kubernetesClusterDomain }}
+      - name: {{ include "hello-world.fullname" . }}-container
         image: '{{ .Values.helloWorldDeployment.helloWorldContainer.image.repository }}:{{
           .Values.helloWorldDeployment.helloWorldContainer.image.tag | default .Chart.AppVersion
           }}'
@@ -44,7 +42,6 @@ spec:
             port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
-        name: hello-world-container
         ports:
         - containerPort: 80
         readinessProbe:
