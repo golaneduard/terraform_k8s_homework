@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "hello-world.fullname" . }}-hello-world-ingress
+  name: {{ include "hello-world.fullname" . }}-ingress
   labels:
   {{- include "hello-world.labels" . | nindent 4 }}
 spec:
@@ -12,7 +12,7 @@ spec:
       paths:
       - backend:
           service:
-            name: '{{ include "hello-world.fullname" . }}-hello-world-service'
+            name: '{{ include "hello-world.fullname" . }}-service'
             port:
               number: 80
         path: /helloWorld

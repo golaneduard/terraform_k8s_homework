@@ -1,13 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "hello-world.fullname" . }}-hello-world-service
+  name: {{ include "hello-world.fullname" . }}-service
   labels:
   {{- include "hello-world.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.helloWorldService.type }}
   selector:
-    app: hello-world
     {{- include "hello-world.selectorLabels" . | nindent 4 }}
   ports:
   {{- .Values.helloWorldService.ports | toYaml | nindent 2 }}
