@@ -8,12 +8,10 @@ spec:
   replicas: {{ .Values.helloWorldDeployment.replicas }}
   selector:
     matchLabels:
-      app: hello-world
     {{- include "hello-world.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: hello-world
       {{- include "hello-world.selectorLabels" . | nindent 8 }}
       annotations:
         checksum/config: {{ .Values.configMapChecksum | default "dummy-checksum" }} # Useful for auto-restart on config change
@@ -27,7 +25,7 @@ spec:
                 - key: app
                   operator: In
                   values:
-                  - hello-world
+                  - {{ include "hello-world.fullname" . }}
               topologyKey: kubernetes.io/hostname
             weight: 100
       containers:
