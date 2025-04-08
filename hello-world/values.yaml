@@ -1,0 +1,47 @@
+helloWorldDeployment:
+  helloWorldContainer:
+    image:
+      repository: pvermeyden/nodejs-hello-world
+      tag: a1e8cf1edcc04e6d905078aed9861807f6da0da4
+    imagePullPolicy: Always
+    resources:
+      limits:
+        cpu: 500m
+        memory: 128Mi
+      requests:
+        cpu: 250m
+        memory: 64Mi
+  podSecurityContext:
+    runAsUser: 1000
+  replicas: 3
+helloWorldService:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  type: ClusterIP
+jsonConfigmap:
+  configJson: |-
+    {
+      "users": [
+        {
+          "id": 1,
+          "name": "Alice Johnson",
+          "email": "alice.johnson@example.com",
+          "isActive": true
+        },
+        {
+          "id": 2,
+          "name": "Bob Smith",
+          "email": "bob.smith@example.com",
+          "isActive": false
+        },
+        {
+          "id": 3,
+          "name": "Charlie Brown",
+          "email": "charlie.brown@example.com",
+          "isActive": true
+        }
+      ]
+    }
+kubernetesClusterDomain: cluster.local

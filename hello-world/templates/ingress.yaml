@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "hello-world.fullname" . }}-hello-world-ingress
+  labels:
+  {{- include "hello-world.labels" . | nindent 4 }}
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: hello-world.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: '{{ include "hello-world.fullname" . }}-hello-world-service'
+            port:
+              number: 80
+        path: /helloWorld
+        pathType: Prefix

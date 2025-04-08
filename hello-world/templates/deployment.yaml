@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hello-world.fullname" . }}-hello-world-deployment
+  labels:
+  {{- include "hello-world.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.helloWorldDeployment.replicas }}
+  selector:
+    matchLabels:
+      app: hello-world
+    {{- include "hello-world.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        app: hello-world
+      {{- include "hello-world.selectorLabels" . | nindent 8 }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - hello-world
+              topologyKey: kubernetes.io/hostname
+            weight: 100
+      containers:
+      - env:
+        - name: KUBERNETES_CLUSTER_DOMAIN
+          value: {{ quote .Values.kubernetesClusterDomain }}
+        image: '{{ .Values.helloWorldDeployment.helloWorldContainer.image.repository }}:{{
+          .Values.helloWorldDeployment.helloWorldContainer.image.tag | default .Chart.AppVersion
+          }}'
+        imagePullPolicy: {{ .Values.helloWorldDeployment.helloWorldContainer.imagePullPolicy
+          }}
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health-check
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        name: hello-world-container
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health-check
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources: {{- toYaml .Values.helloWorldDeployment.helloWorldContainer.resources
+          | nindent 10 }}
+        volumeMounts:
+        - mountPath: /app/config/config.json
+          name: config-volume
+          subPath: config.json
+      restartPolicy: Always
+      securityContext: {{- toYaml .Values.helloWorldDeployment.podSecurityContext | nindent
+        8 }}
+      volumes:
+      - configMap:
+          name: {{ include "hello-world.fullname" . }}-json-configmap
+        name: config-volume

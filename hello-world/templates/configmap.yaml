@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hello-world.fullname" . }}-json-configmap
+  labels:
+  {{- include "hello-world.labels" . | nindent 4 }}
+data:
+  config.json: {{ .Values.jsonConfigmap.configJson | toYaml | indent 1 }}
