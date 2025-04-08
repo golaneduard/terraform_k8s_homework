@@ -26,24 +26,23 @@ spec:
                         - hello-world
                 topologyKey: "kubernetes.io/hostname"
       securityContext:
-        runAsUser: 2000
-        allowPrivilegeEscalation: false
+        runAsUser: 1000
       containers:
         - name: hello-world-container
           image: pvermeyden/nodejs-hello-world:a1e8cf1edcc04e6d905078aed9861807f6da0da4
           ports:
-            - containerPort: 3000
+            - containerPort: 80
           livenessProbe:
             httpGet:
               path: /health-check
-              port: 3000
+              port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
             failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /health-check
-              port: 3000
+              port: 80
             initialDelaySeconds: 5
             periodSeconds: 5
             failureThreshold: 3
