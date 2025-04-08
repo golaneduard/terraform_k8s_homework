@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "hello-world.fullname" . }}-pdb
+  namespace: test
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+    {{- include "hello-world.selectorLabels" . | nindent 6 }}
