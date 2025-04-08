@@ -14,7 +14,7 @@ spec:
       labels:
       {{- include "hello-world.selectorLabels" . | nindent 8 }}
       annotations:
-        checksum/config: {{ .Values.configMapChecksum | default "dummy-checksum" }} # Useful for auto-restart on config change
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
     spec:
       affinity:
         podAntiAffinity:
